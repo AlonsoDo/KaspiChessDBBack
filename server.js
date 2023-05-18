@@ -1,8 +1,8 @@
-// Define "require"
-import module from "module"
-const require = module.createRequire(import.meta.url)
+// Define 'require'
+import module from 'module';
+const require = module.createRequire(import.meta.url);
 
-const fs = require('fs/promises')
+const fs = require('fs/promises');
 
 var mysql = require('mysql');
 var pool  = mysql.createPool({
@@ -14,27 +14,27 @@ var pool  = mysql.createPool({
     port            : 3306
 });
 
-import { Chess } from 'chess.js'
+import { Chess } from 'chess.js';
 
-const split = require('./lib/index.umd.cjs').split
+const split = require('./lib/index.umd.cjs').split;
 
-import path from 'path'
-import {fileURLToPath} from 'url'
-import { finished } from "stream";
+import path from 'path';
+import {fileURLToPath} from 'url';
+//import { finished } from "stream";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // helpers
 //const parseGames = (string) => parse(string, {startRule: 'games'})
-const splitGames = (string) => split(string, {startRule: "games"})
+const splitGames = (string) => split(string, {startRule: "games"});
 
-const gamesFilePath = path.resolve(__dirname, './Games.pgn')
+const gamesFilePath = path.resolve(__dirname, './Games.pgn');
 fs.readFile(gamesFilePath, 'utf-8')
     .then(async pgnFile=> {
         
         // Separo partidas y las cargos en el array games
-        const games = splitGames(pgnFile)
+        const games = splitGames(pgnFile);
 
         /*const players = []
         games.forEach((game) => {
@@ -51,10 +51,10 @@ fs.readFile(gamesFilePath, 'utf-8')
         for (let i = 0; i < games.length; i++) {
 
             // Valor del Nodo Padre para la posicion inicial
-            let NodoPadre = 0
+            let NodoPadre = 0;
             
             // Cargo la partida individual
-            let BufferGame = JSON.stringify(games[i].all, null, 2)            
+            let BufferGame = JSON.stringify(games[i].all, null, 2);            
 
             try{
                 const resultSaveGame = await SaveGame(BufferGame);
@@ -80,6 +80,14 @@ fs.readFile(gamesFilePath, 'utf-8')
                 //the above technique will not capture the fen of the starting position.  therefore:
                 fens = [startPos, ...fens];
 
+                // Movimientos en formato SAN
+                let sans = [];
+                for (let i = 0; i < chess1.history().length; i++){
+                    sans.push(chess1.history()[i]);
+                }
+
+                sans = ['0', ...sans];
+
                 //double checking everything
                 //fens.forEach(fen => console.log(fen));  
 
@@ -98,7 +106,7 @@ fs.readFile(gamesFilePath, 'utf-8')
                     // Si no encuentra la FEN, la inserto
                     if (resultSelectFromTree.length == 0){              
                         
-                        const resultInsertIntoTree = await InsertIntoTree(NodoPadre,fens[i]);
+                        const resultInsertIntoTree = await InsertIntoTree(NodoPadre,fens[i],sans[i]);
 
                         // Nuevo Nodo Padre
                         NodoPadre = resultInsertIntoTree.insertId;
@@ -139,9 +147,9 @@ fs.readFile(gamesFilePath, 'utf-8')
         });
     };
     
-    async function InsertIntoTree(NodoPadre,FEN){
+    async function InsertIntoTree(NodoPadre,FEN,SAN){
         return new Promise((resolve, reject)=>{
-            pool.query("INSERT INTO tree (NodoPadre,FEN) VALUES ('" + NodoPadre + "','" + FEN + "')",  (error, results)=>{
+            pool.query("INSERT INTO tree (NodoPadre,FEN,SAN) VALUES ('" + NodoPadre + "','" + FEN + "','" + SAN + "')",  (error, results)=>{
                 if(error){
                     return reject(error);
                 }
@@ -161,9 +169,9 @@ fs.readFile(gamesFilePath, 'utf-8')
         });
     };
 
-    async function InsertIntoGameRef(Number,Nodo){
+    async function InsertIntoGameRef(IdGame,Nodo){
         return new Promise((resolve, reject)=>{
-            pool.query("INSERT INTO gameref (Number,Nodo) VALUES ('" + Number + "','" + Nodo + "')",  (error, results)=>{
+            pool.query("INSERT INTO gameref (IdGame,Nodo) VALUES ('" + IdGame + "','" + Nodo + "')",  (error, results)=>{
                 if(error){
                     return reject(error);
                 }

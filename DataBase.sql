@@ -18,9 +18,9 @@ USE `kaspichessdb`;
 
 -- Volcando estructura para tabla kaspichessdb.gameref
 CREATE TABLE IF NOT EXISTS `gameref` (
-  `Number` int unsigned NOT NULL,
-  `Nodo` int unsigned NOT NULL,
-  KEY `Number` (`Number`),
+  `IdGame` int NOT NULL,
+  `Nodo` int NOT NULL,
+  KEY `IdGame` (`IdGame`),
   KEY `Nodo` (`Nodo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -28,10 +28,10 @@ CREATE TABLE IF NOT EXISTS `gameref` (
 
 -- Volcando estructura para tabla kaspichessdb.games
 CREATE TABLE IF NOT EXISTS `games` (
-  `Number` int unsigned NOT NULL AUTO_INCREMENT,
+  `IdGame` int NOT NULL AUTO_INCREMENT,
   `PGNGame` text NOT NULL,
-  PRIMARY KEY (`Number`)
-) ENGINE=InnoDB AUTO_INCREMENT=1147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`IdGame`)
+) ENGINE=InnoDB AUTO_INCREMENT=4669 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- La exportación de datos fue deseleccionada.
 
@@ -40,10 +40,11 @@ CREATE TABLE IF NOT EXISTS `tree` (
   `Nodo` int unsigned NOT NULL AUTO_INCREMENT,
   `NodoPadre` int unsigned NOT NULL DEFAULT '0',
   `FEN` varchar(100) NOT NULL DEFAULT '0',
+  `SAN` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '0',
   PRIMARY KEY (`Nodo`),
   KEY `FEN` (`FEN`),
   KEY `NodoPadre` (`NodoPadre`)
-) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=758 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- La exportación de datos fue deseleccionada.
 
