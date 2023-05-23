@@ -95,7 +95,7 @@ fs.readFile(gamesFilePath, 'utf-8')
                 for (let i = 0; i < fens.length; i++) {
                     
                     // Solo las primeras jugadas de la partida se tratan
-                    if (i == 5){
+                    if (i == 10){
                         break;
                     }
 
